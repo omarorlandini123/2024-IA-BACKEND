@@ -1,0 +1,24 @@
+{
+  "name": "ia-backend",
+  "version": "1.0.0",
+  "description": "Backend para el proyecto de IA",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/omarorlandini123/2024-IA-BACKEND.git"
+  },
+  "author": "IA UPN 2024-2",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/omarorlandini123/2024-IA-BACKEND/issues"
+  },
+  "homepage": "https://github.com/omarorlandini123/2024-IA-BACKEND#readme",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "express": "^4.21.1",
+    "express-validator": "^7.2.0"
+  }
+}
