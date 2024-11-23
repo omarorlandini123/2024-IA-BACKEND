@@ -158,6 +158,9 @@ app.post('/iniciarSesion', (req, res) => {
 });
 
 
+
+
+
 app.put('/usuario', (req, res) => {
   const { dni, nombre, ape_pa, ape_ma, correo, contacto, sexo, fecha_nac, universidad, carrera } = req.body;
 
