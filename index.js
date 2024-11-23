@@ -202,6 +202,46 @@ app.put('/usuario', (req, res) => {
 });
 
 
+
+// API 6:
+app.get('/api/evaluacion', (req, res) => {
+  const { ID_usuario, ID_tipo_evaluacion, Respuestas } = req.query;
+
+  if (!ID_usuario || !ID_tipo_evaluacion || !Respuestas) {
+    return res.status(400).json({ message: 'Faltan parámetros en la solicitud' });}
+
+  if (Respuestas.length !== 25) {
+    return res.status(400).json({ message: 'No son suficientes respuestas' });}
+
+  const fecha_respuesta = new Date();
+
+  const queryInsertRespuesta = 'INSERT INTO respuestas (fecha_respuesta, ID_usuario, ID_tipo_evaluacion) VALUES (?, ?, ?)';
+  db.query(queryInsertRespuesta, [fecha_respuesta, ID_usuario, ID_tipo_evaluacion], (err, result) => {
+    if (err) {
+      console.error('Error al insertar respuesta: ' + err.stack);
+      return res.status(500).json({ message: 'Error al registrar la respuesta' });
+    }
+
+    const ID_respuesta = result.insertId;
+
+  const queryInsertDetalleRespuesta = 'INSERT INTO detalle_respuesta (ID_respuesta, ID_pregunta, respuesta) VALUES (?, ?, ?)';
+      
+  // Usar un bucle para insertar las respuestas
+  for (let i = 0; i < Respuestas.length; i++) {
+    const respuesta = Respuestas[i];
+    const ID_pregunta = i+5;
+
+    db.query(queryInsertDetalleRespuesta, [ID_respuesta, ID_pregunta, respuesta], (err) => {
+      if (err) {
+        console.error('Error al insertar detalle de respuesta: ' + err.stack);
+      }
+    });
+  }
+
+  return res.status(200).json({ message: 'Respuestas registradas' });
+  });
+});
+
 //
 app.use((req, res) => {
   res.status(404).json({ message: 'Ruta no encontrada' });
