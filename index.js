@@ -158,27 +158,45 @@ app.post('/iniciarSesion', (req, res) => {
 });
 
 
+app.put('/usuario', (req, res) => {
+  const { dni, nombre, ape_pa, ape_ma, correo, contacto, sexo, fecha_nac, universidad, carrera } = req.body;
 
+  if (!dni || !nombre || !ape_pa || !correo) {
+    return res.status(400).json({ message: 'Faltan datos requeridos para actualizar' });
+  }
 
+  const query = `
+    UPDATE usuarios
+    SET 
+      nombre = ?, 
+      ape_pa = ?, 
+      ape_ma = ?, 
+      correo = ?, 
+      contacto = ?, 
+      sexo = ?, 
+      fecha_nac = ?, 
+      universidad = ?, 
+      carrera = ?
+    WHERE dni = ?
+  `;
 
+  connection.query(
+    query,
+    [nombre, ape_pa, ape_ma, correo, contacto, sexo, fecha_nac, universidad, carrera, dni],
+    (err, results) => {
+      if (err) {
+        console.error('Error al actualizar los datos del usuario:', err);
+        return res.status(500).json({ message: 'Error interno al actualizar los datos del usuario' });
+      }
 
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      res.status(200).json({ message: 'Usuario actualizado con éxito' });
+    }
+  );
+});
 
 
 //
