@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 80;
+const port = 85;
 const mysql = require('mysql2');
 
 // Middleware to parse JSON request bodies
@@ -8,10 +8,10 @@ app.use(express.json());
 
 //
 const connection = mysql.createConnection({
-  host: '10.27.160.3',
-  user: 'ia2024',
-  password: '123456',
-  database: 'aplicacion',
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'bd_sistema2',
   port: 3306,
 });
 
@@ -161,7 +161,7 @@ app.post('/iniciarSesion', (req, res) => {
 
 
 app.get('/usuarios', (req, res) => {
-  const query = 'SELECT * FROM usuarios';
+  const query = 'SELECT u.correo, u.password  FROM `usuarios` AS u';
 
   connection.query(query, (err, results) => {
     if (err) {
@@ -258,6 +258,81 @@ app.get('/api/evaluacion', (req, res) => {
   return res.status(200).json({ message: 'Respuestas registradas' });
   });
 });
+
+
+app.get('/tipoeval', (req, res) => {
+  const query = 'SELECT ID_tipo_evaluacion, nombre, descripcion FROM tipo_evaluaciones';
+
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener los tipos de evaluación:', err);
+      return res.status(500).json({ message: 'Error al obtener los tipos de evaluación' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron tipos de evaluación' });
+    }
+
+    res.json(results);
+  });
+});
+
+
+app.get('/preguntas/tipoeval', (req, res) => {
+  const query = 'SELECT p.ID_pregunta,p.contenido, te.nombre, te.descripcion FROM `preguntas` as p INNER JOIN `tipo_evaluaciones` as te on te.ID_tipo_evaluacion= p.ID_tipo_evaluacion';
+
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener los tipos de evaluación:', err);
+      return res.status(500).json({ message: 'Error al obtener los tipos de evaluación' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron tipos de evaluación' });
+    }
+
+    res.json(results);
+  });
+});
+
+
+app.get('/alternativa/pregunta', (req, res) => {
+  const query = 'SELECT al.ID_alternativa, pre.contenido, al.descripcion, al.valor FROM `alternativas` as al INNER JOIN `preguntas` as pre on al.ID_pregunta = pre.ID_pregunta';
+
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener los tipos de evaluación:', err);
+      return res.status(500).json({ message: 'Error al obtener los tipos de evaluación' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron tipos de evaluación' });
+    }
+
+    res.json(results);
+  });
+});
+
+
+app.get('/historial/detalle/usuarios/:id', (req, res) => {
+  const userId = req.params.id; // Obtiene el ID del usuario desde los parámetros de la URL
+
+  const query = 'SELECT * FROM usuarios WHERE ID_usuario = ?';
+
+  connection.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error al obtener el usuario:', err);
+      return res.status(500).json({ message: 'Error al obtener el usuario' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    res.json(results[0]); // Devuelve solo el primer usuario encontrado
+  });
+});
+
 
 //
 app.use((req, res) => {

@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/omarorlandini123/2024-IA-BACKEND#readme",
   "dependencies": {
-    "express": "^4.18.2",
+    "express": "^4.21.1",
+    "ia-backend": "file:",
+    "mysql": "^2.18.1",
     "mysql2": "^3.11.4"
   },
   "engines": {
